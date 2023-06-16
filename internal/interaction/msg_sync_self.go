@@ -172,7 +172,9 @@ func (m *SelfMsgSync) syncMsg(operationID string) {
 	if m.seqMaxNeedSync > m.seqMaxSynchronized {
 		log.Info(operationID, "do syncMsgFromServer ", m.seqMaxSynchronized+1, m.seqMaxNeedSync)
 		//m.syncMsgFromServer(m.seqMaxSynchronized+1, m.seqMaxNeedSync, operationID)
-		if m.seqMaxSynchronized == 0 && m.seqMaxNeedSync > 100 {
+		if m.seqMaxNeedSync <= 100 {
+			m.syncMsgFromServer(m.seqMaxSynchronized+1, m.seqMaxNeedSync, operationID)
+		} else {
 			m.syncMsgFromServer(m.seqMaxNeedSync-100, m.seqMaxNeedSync, operationID)
 		}
 		m.seqMaxSynchronized = m.seqMaxNeedSync
