@@ -220,9 +220,14 @@ func (m *ReadDiffusionGroupMsgSync) syncMsgFroAllGroup(operationID string) {
 		}
 		seqMaxNeedSync := m.Group2SeqMaxNeedSync[v]
 		seqMaxSynchronized := m.Group2SeqMaxSynchronized[v]
+
 		if seqMaxNeedSync > seqMaxSynchronized {
 			log.Info(operationID, "do syncMsgFromServer ", seqMaxSynchronized+1, seqMaxNeedSync, v)
-			m.syncMsgFromServer(seqMaxSynchronized+1, seqMaxNeedSync, v, operationID, 0)
+			bm := seqMaxSynchronized + 1
+			if bm < seqMaxNeedSync-100 {
+				bm = seqMaxSynchronized - 100
+			}
+			m.syncMsgFromServer(bm, seqMaxNeedSync, v, operationID, 0)
 			m.Group2SeqMaxSynchronized[v] = seqMaxNeedSync
 		} else {
 			log.Info(operationID, "do nothing ", seqMaxSynchronized+1, seqMaxNeedSync, v)
